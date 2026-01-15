@@ -37,7 +37,7 @@ export default function LoginPage() {
                         options: { emailRedirectTo: `${window.location.origin}/admin` },
                     });
                     if (error) setMessage('Error sending magic link: ' + error.message);
-                    else setMessage('Check your email for the magic link!');
+                    else setMessage('✅ Magic link sent! Check your email. After clicking the link in your email, you can close this tab.');
                 }}
                 className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
