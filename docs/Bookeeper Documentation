@@ -1,0 +1,328 @@
+# Bookkeeping Admin App
+
+## Project Purpose
+Personal bookkeeping app for tracking income, expenses, and donations with tax-ready exports.
+
+## Tech Stack
+**Frontend**: Next.js 14 + TypeScript + Tailwind CSS  
+**Backend**: Supabase (PostgreSQL + Auth + Storage)  
+**Icons**: Lucide React  
+**Hosting**: Vercel
+
+## Core Features
+**Income Tracking** – Subscriptions, Book Sales, Partner Spots  
+**Expense Tracking** – 11 categories with receipt upload  
+**Donation Tracking** – Charitable giving with receipts  
+**Monthly Summaries** – Profit calculations with donation targets  
+**CSV Exports** – Tax-ready files for CPA  
+**Receipt Viewer** – PDF/image previews in modal
+
+## UI & UX Principles
+**Mobile-first design** – Stacked cards on mobile, tables on desktop  
+**Consistent color coding** – Blue=income, red=expenses, purple=donations, green=profit  
+**Low visual noise** – Grouping with spacing and background tones  
+**Progressive disclosure** – Advanced features available but not intrusive  
+**Immediate feedback** – Loading states and success/error messages
+
+## File Structure
+app/
+├── admin/ # Protected routes
+│ ├── page.tsx # Dashboard
+│ ├── add-transaction/ # Income/expense landing
+│ ├── transactions/ # Transaction list
+│ ├── donations/ # Add/view donations
+│ └── summary/ # Monthly summary
+├── login/ # Auth page
+└── layout.tsx # Root layout
+
+text
+
+## Key Components
+**AdminHeader** – Navigation with mobile menu  
+**ReceiptViewer** – Modal for PDF/image previews  
+**CSVExports** – Yearly tax export generator
+
+## Database Schema
+
+### Transactions Table
+```sql
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users NOT NULL,
+    date DATE NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('Income', 'Expense')),
+    amount DECIMAL(10,2),
+    income_source TEXT CHECK (
+        (type = 'Income' AND income_source IN ('Subscriptions', 'Book Sales', 'Partner Spots')) 
+        OR (type = 'Expense' AND income_source IS NULL)
+    ),
+    category TEXT,
+    description TEXT,
+    vendor TEXT,
+    receipt_url TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+Donations Table
+sql
+CREATE TABLE donations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users NOT NULL,
+    date DATE NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    charity TEXT NOT NULL,
+    donation_type TEXT NOT NULL,
+    method TEXT,
+    notes TEXT,
+    receipt_url TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+Environment Variables
+text
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+Security Setup
+RLS Policies – Users can only access their own data
+Storage Policies – Public read, authenticated upload
+Bucket Structure – user_id/year/month/filename.ext
+
+Storage Buckets
+receipts – Expense receipts (public: true)
+
+donation-receipts – Donation receipts (public: true)
+
+Storage Policies Required
+sql
+-- Public read access
+CREATE POLICY "Public can view receipts" ON storage.objects FOR SELECT
+USING (bucket_id = 'receipts');
+
+-- Authenticated upload access
+CREATE POLICY "Authenticated users can upload receipts" ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'receipts' AND auth.role() = 'authenticated');
+
+-- User file management
+CREATE POLICY "Users can manage own files" ON storage.objects FOR ALL
+USING (bucket_id = 'receipts' AND (storage.foldername(name))[1] = auth.uid()::text);
+Calculations
+Total Income = Subscriptions + Book Sales + Partner Spots
+Donation Target = 20% of Total Income
+Net Profit (Before Donations) = Income - Expenses
+Net Profit (Final) = Income - Expenses - Actual Donations
+
+CSV Exports
+expenses-YYYY.csv – Business expenses for deductions
+
+income-YYYY.csv – Revenue by source for 1099 reporting
+
+donations-YYYY.csv – Charitable contributions with receipt URLs
+
+summary-YYYY.csv – Year-end totals for CPA review
+
+Income Types
+Subscriptions – Recurring subscription revenue
+
+Book Sales – Book purchase revenue
+
+Partner Spots – Website sponsorship revenue
+
+Expense Categories
+Rent, Utilities, Supplies, Food, Travel, Software, Marketing, Office, Taxes, Insurance, Other
+
+Page Descriptions
+Dashboard (/admin)
+Monthly overview with quick actions. Emphasizes "Add Expense" as primary action.
+
+Add Transaction Landing (/admin/add-transaction)
+Gateway to choose between income or expense entry.
+
+Add Income (/admin/add-income)
+Form for recording income with 3 source types.
+
+Add Expense (/admin/add-expense)
+Form for recording expenses with receipt upload.
+
+Transactions List (/admin/transactions)
+View and filter all transactions. Mobile: cards. Desktop: table.
+
+Add Donation (/admin/donations)
+Form for recording charitable donations with receipt upload.
+
+Donations List (/admin/donations/list)
+View all donations by year. Mobile: cards. Desktop: table.
+
+Monthly Summary (/admin/summary)
+Comprehensive monthly report with profit breakdowns and year-to-date.
+
+Deployment Checklist
+Pre-Deployment Tests
+All income types work (Subscriptions, Book Sales, Partner Spots)
+
+Expense with receipt upload works
+
+Donation with receipt upload works
+
+Monthly summary calculates correctly
+
+CSV exports download properly
+
+Receipt viewer opens PDFs/images
+
+Authentication works (login/logout)
+
+Vercel Setup Steps
+Connect Repository to Vercel
+
+Set Environment Variables in Vercel dashboard:
+
+NEXT_PUBLIC_SUPABASE_URL
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+Configure Custom Domain (see below)
+
+Set Build Command: npm run build
+
+Deploy
+
+Custom Domain Setup (mturko.com)
+In Vercel dashboard:
+
+Go to Settings → Domains
+
+Add domain: bookkeeping.mturko.com
+
+Follow DNS instructions:
+
+text
+Type: CNAME
+Name: bookkeeping
+Value: cname.vercel-dns.com
+Wait for DNS propagation (5-60 minutes)
+
+Enable Force HTTPS in Vercel settings
+
+Post-Deployment Checks
+Test app at your custom domain
+
+Verify Supabase connection works from production
+
+Check that file uploads work (storage permissions)
+
+Test authentication flows
+
+Verify emails are received (if using email auth)
+
+Troubleshooting
+Common Issues & Fixes
+"Bucket not found" error
+
+sql
+-- Fix: Ensure buckets exist and are public
+UPDATE storage.buckets SET public = true WHERE id IN ('receipts', 'donation-receipts');
+"new row violates row-level security policy"
+
+sql
+-- Fix: Check and fix RLS policies
+SELECT * FROM pg_policies WHERE tablename = 'transactions';
+Receipts not displaying
+
+Check bucket is public: true
+
+Verify storage policies allow public SELECT
+
+Check receipt URLs are complete: https://.../storage/v1/object/public/receipts/...
+
+CSV exports failing
+
+Verify user is authenticated
+
+Check date range has data
+
+Test with smaller date range first
+
+Log Locations
+Vercel Logs: Dashboard → Project → Logs
+
+Supabase Logs: Dashboard → Logs
+
+Browser Console: F12 → Console tab
+
+Maintenance Schedule
+Monthly
+Test all core features
+
+Check storage usage
+
+Verify backups are working
+
+Quarterly
+Update dependencies (npm update)
+
+Review error logs
+
+Test on latest browsers
+
+Yearly
+Review tax export formats for compliance changes
+
+Update any regulatory requirements
+
+Archive old data if needed
+
+Backup Strategy
+Database: Supabase daily backups (automatic)
+
+Files: Supabase storage (manual export via dashboard)
+
+Code: GitHub repository
+
+Update Process
+Create feature branch
+
+Test locally
+
+Deploy to Vercel (auto-deploys from main)
+
+Verify production functionality
+
+Next Steps
+Immediate Deployment
+Final local test: npm run build && npm start
+
+Push to GitHub: git push origin main
+
+Connect to Vercel: Import repository
+
+Configure domain: bookkeeping.mturko.com
+
+Set environment variables
+
+Deploy
+
+Post-Deployment Tasks
+Test full functionality at your domain
+
+Set up Vercel Analytics
+
+Document login credentials securely
+
+Set calendar reminders for quarterly maintenance
+
+Future Enhancements
+Email notifications for large transactions
+
+Budget tracking features
+
+Recurring transaction templates
+
+Multi-currency support
+
+API for external integrations
+
+Deployment Status: ✅ Ready for Vercel
+Custom Domain: bookkeeping.mturko.com (to be configured)
+Estimated Setup Time: 15-30 minutes
+Maintenance Level: Low (quarterly updates recommended)
+
+Last Updated: [Current Date]
+Document Version: 1.0
