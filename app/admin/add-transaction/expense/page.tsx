@@ -383,7 +383,7 @@ export default function AddExpensePage() {
                     <h3 className="font-medium text-gray-900 mb-3">Quick Actions</h3>
                     <div className="space-y-3">
                         <Link
-                            href="/admin/add-income"
+                            href="/admin/add-transaction/income/"
                             className="block p-3 border border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-center font-medium"
                         >
                             Add Income Instead

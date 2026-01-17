@@ -153,7 +153,7 @@ export default function AddIncomePage() {
                                         ? 'border-blue-500 bg-blue-50 text-blue-700 font-medium'
                                         : 'border-gray-300 hover:border-gray-400'}`}
                                 >
-                                    Subscriptions
+                                    WCU Registry
                                 </button>
                                 <button
                                     type="button"

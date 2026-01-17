@@ -3,7 +3,8 @@
 import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSupabaseUser } from '@/hooks/useSupabaseUser';
-import AdminHeader from './components/AdminHeader'; // correct relative path
+import AdminHeader from './components/AdminHeader';
+import Footer from './components/Footer';// correct relative path
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const user = useSupabaseUser();
@@ -19,8 +20,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <AdminHeader /> {/* use the component now */}
+            <AdminHeader />
             <main className="flex-1 p-4">{children}</main>
+            <Footer />
         </div>
     );
 }

@@ -154,8 +154,8 @@ export default function AdminDashboard() {
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Bookkeeping Dashboard</h1>
-                            <p className="text-gray-600 mt-1">Track your finances at a glance</p>
+                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
+                            <p className="text-gray-600 mt-1">WCU finances at a glance</p>
                         </div>
                         <button
                             onClick={handleRefresh}
@@ -369,11 +369,6 @@ export default function AdminDashboard() {
                     </div>
                 )}
 
-                {/* Footer */}
-                <div className="text-center text-sm text-gray-500 mt-8">
-                    <p>Bookkeeping Admin • {new Date().getFullYear()}</p>
-                    <p className="mt-1">Track your finances with purpose</p>
-                </div>
             </div>
         </div>
     );

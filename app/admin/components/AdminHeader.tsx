@@ -108,7 +108,7 @@ export default function AdminHeader() {
                         <div className="p-2 bg-white/20 rounded-lg">
                             <DollarSign className="w-6 h-6" />
                         </div>
-                        <span className="text-xl font-bold tracking-tight">Bookkeeping Admin</span>
+                        <span className="text-xl font-bold tracking-tight">WCU Bookkeeper</span>
                     </Link>
 
                     {/* Desktop Navigation */}
