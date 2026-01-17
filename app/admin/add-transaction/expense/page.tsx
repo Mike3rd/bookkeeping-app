@@ -24,7 +24,7 @@ export default function AddExpensePage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
 
-    const commonCategories = ['Rent', 'Utilities', 'Supplies', 'Food', 'Travel', 'Software', 'Marketing', 'Office', 'Taxes', 'Insurance', 'Other'];
+    const commonCategories = ['Advertising and Promotion', 'Business Meals', 'Use of Car', 'Business Travel', 'Home Office', 'Professional Services and Legal Fees', 'Office Supplies', 'Utilities', 'Travel', 'Software', 'Cybersecurity', 'Event sponsorships', 'Other'];
 
     const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
