@@ -15,7 +15,9 @@ import {
     LogOut,
     Menu,
     X,
-    ChevronDown
+    ChevronDown,
+    Package,
+    TrendingUp
 } from 'lucide-react';
 
 export default function AdminHeader() {
@@ -94,6 +96,8 @@ export default function AdminHeader() {
         { href: "/admin", icon: <Home className="w-5 h-5" />, label: "Dashboard" },
         { href: "/admin/add-transaction", icon: <PlusCircle className="w-5 h-5" />, label: "Add Transaction" },
         { href: "/admin/transactions", icon: <FileText className="w-5 h-5" />, label: "Transactions" },
+        { href: "/admin/inventory", icon: <Package className="w-5 h-5" />, label: "Inventory" },
+        { href: "/admin/inventory/report", icon: <TrendingUp className="w-5 h-5" />, label: "Sales Report" },
         { href: "/admin/donations", icon: <Heart className="w-5 h-5" />, label: "Add Donation" },
         { href: "/admin/donations/list", icon: <FileText className="w-5 h-5" />, label: "Donations List" },
         { href: "/admin/summary", icon: <BarChart3 className="w-5 h-5" />, label: "Monthly Summary" },

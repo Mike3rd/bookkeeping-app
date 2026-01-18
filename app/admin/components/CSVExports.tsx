@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useSupabaseUser } from '@/hooks/useSupabaseUser';
-import { Download, FileText, TrendingUp, TrendingDown, Heart, DollarSign } from 'lucide-react';
+import { Download, Package, FileText, TrendingUp, TrendingDown, Heart, DollarSign } from 'lucide-react';
 
 interface CSVExportsProps {
     year: number;
@@ -14,7 +14,7 @@ export function CSVExports({ year }: CSVExportsProps) {
     const [loading, setLoading] = useState<string | null>(null);
     const [message, setMessage] = useState('');
 
-    const generateCSV = useCallback(async (type: 'expenses' | 'income' | 'donations' | 'summary') => {
+    const generateCSV = useCallback(async (type: 'expenses' | 'income' | 'donations' | 'summary' | 'inventory') => {
         if (!user) return;
 
         setLoading(type);
@@ -135,6 +135,39 @@ export function CSVExports({ year }: CSVExportsProps) {
 
                     filename = `summary-${year}.csv`;
                     break;
+
+                case 'inventory':
+                    const { data: inventoryData } = await supabase
+                        .from('inventory_sales')
+                        .select(`
+            *,
+            inventory_purchases!inner(
+                item_name
+            )
+        `)
+                        .eq('user_id', user.id)
+                        .gte('sale_date', `${year}-01-01`)
+                        .lte('sale_date', `${year}-12-31`)
+                        .order('sale_date', { ascending: true });
+
+                    csvContent = 'date,item,quantity,sale_price,revenue,cogs,profit,margin,notes\n';
+
+                    inventoryData?.forEach(sale => {
+                        const date = sale.sale_date.split('T')[0];
+                        const item = `"${sale.inventory_purchases.item_name.replace(/"/g, '""')}"`;
+                        const quantity = sale.quantity_sold;
+                        const salePrice = sale.sale_price?.toFixed(2) || '0.00';
+                        const revenue = sale.revenue?.toFixed(2) || '0.00';
+                        const cogs = sale.cogs?.toFixed(2) || '0.00';
+                        const profit = sale.profit?.toFixed(2) || '0.00';
+                        const margin = sale.revenue > 0 ? ((sale.profit || 0) / sale.revenue * 100).toFixed(1) : '0';
+                        const notes = `"${(sale.notes || '').replace(/"/g, '""')}"`;
+
+                        csvContent += `${date},${item},${quantity},${salePrice},${revenue},${cogs},${profit},${margin}%,${notes}\n`;
+                    });
+
+                    filename = `inventory-sales-${year}.csv`;
+                    break;
             }
 
             // Create and download the CSV file
@@ -188,6 +221,13 @@ export function CSVExports({ year }: CSVExportsProps) {
             icon: <DollarSign className="w-5 h-5" />,
             color: 'from-blue-500 to-blue-600'
         },
+        {
+            type: 'inventory' as const,
+            label: 'Inventory Sales CSV',
+            description: 'Detailed book sales with COGS & profit',
+            icon: <Package className="w-5 h-5" />, // You'll need to import Package
+            color: 'from-amber-500 to-amber-600'
+        },
     ];
 
     return (
@@ -201,7 +241,7 @@ export function CSVExports({ year }: CSVExportsProps) {
                 Download CSV files formatted for tax preparation. Files follow standard accounting formats.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {exportButtons.map((button) => (
                     <button
                         key={button.type}
