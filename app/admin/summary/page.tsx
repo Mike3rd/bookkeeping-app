@@ -219,6 +219,33 @@ export default function MonthlySummaryPage() {
                         </div>
                     </div>
 
+                    {/* Expenses Card - ADD THIS */}
+                    <div className="bg-gradient-to-r from-red-50 to-red-100 p-5 border-b border-red-200">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="p-2 bg-red-100 rounded-lg">
+                                <TrendingDown className="w-5 h-5 text-red-600" />
+                            </div>
+                            <h2 className="text-lg font-semibold text-gray-900">Monthly Expenses</h2>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center p-2 bg-white/50 rounded-lg">
+                                <span className="text-gray-700">Total Expenses</span>
+                                <span className="text-xl font-bold text-red-700">${expenses.toFixed(2)}</span>
+                            </div>
+
+                            {/* Optional: Add expense categories if you want */}
+                            <div className="text-sm text-gray-600 pt-2 border-t border-red-200">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                                    <span>Tracked across {transactions.filter(t => t.type === 'Expense').length} expense transactions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     {/* Donations Card */}
                     <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-5 border-b border-purple-200">
                         <div className="flex items-center gap-2 mb-3">
@@ -326,7 +353,7 @@ export default function MonthlySummaryPage() {
                     <div className="space-y-0 rounded-xl overflow-hidden shadow-sm">
                         {/* YTD Income & Expenses */}
                         <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-5 border-b border-amber-200">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="bg-white/50 rounded-lg p-4">
                                     <div className="text-sm text-gray-600 mb-1">Total Income</div>
                                     <div className="text-2xl font-bold text-amber-700">${incomeYTD.toFixed(2)}</div>
@@ -334,6 +361,13 @@ export default function MonthlySummaryPage() {
                                 <div className="bg-white/50 rounded-lg p-4">
                                     <div className="text-sm text-gray-600 mb-1">Expenses</div>
                                     <div className="text-2xl font-bold text-red-600">${expensesYTD.toFixed(2)}</div>
+                                    <div className="text-xs text-gray-600 mt-1">
+                                        {incomeYTD > 0 ? ((expensesYTD / incomeYTD) * 100).toFixed(1) : '0'}% of income
+                                    </div>
+                                </div>
+                                <div className="bg-white/50 rounded-lg p-4">
+                                    <div className="text-sm text-gray-600 mb-1">Donations</div>
+                                    <div className="text-2xl font-bold text-purple-700">${donationsYTD.toFixed(2)}</div>
                                 </div>
                             </div>
                         </div>
@@ -401,7 +435,7 @@ export default function MonthlySummaryPage() {
                 {/* Summary Legend */}
                 <div className="mt-6 bg-white rounded-xl shadow-sm p-4">
                     <h3 className="font-semibold text-gray-900 mb-3">Understanding Your Numbers</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3"> {/* Change to 4 columns */}
                         <div className="flex items-start gap-2">
                             <div className="w-3 h-3 bg-blue-500 rounded-full mt-1"></div>
                             <div>
@@ -409,6 +443,16 @@ export default function MonthlySummaryPage() {
                                 <div className="text-xs text-gray-600">Income - Expenses (operational profit)</div>
                             </div>
                         </div>
+
+                        {/* ADD THIS EXPENSES LEGEND */}
+                        <div className="flex items-start gap-2">
+                            <div className="w-3 h-3 bg-red-500 rounded-full mt-1"></div>
+                            <div>
+                                <div className="font-medium text-sm text-gray-900">Expenses</div>
+                                <div className="text-xs text-gray-600">Business costs & operational expenses</div>
+                            </div>
+                        </div>
+
                         <div className="flex items-start gap-2">
                             <div className="w-3 h-3 bg-purple-500 rounded-full mt-1"></div>
                             <div>
