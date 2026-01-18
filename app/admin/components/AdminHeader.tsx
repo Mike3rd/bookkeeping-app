@@ -86,14 +86,13 @@ export default function AdminHeader() {
 
     // Primary desktop links (shown always)
     const primaryDesktopLinks = [
-        { href: "/admin", icon: <Home className="w-5 h-5" />, label: "Dashboard" },
         { href: "/admin/add-transaction", icon: <PlusCircle className="w-5 h-5" />, label: "Add" },
+        { href: "/admin/summary", icon: <BarChart3 className="w-5 h-5" />, label: "Summary" },
         { href: "/admin/transactions", icon: <FileText className="w-5 h-5" />, label: "Transactions" },
     ];
 
     // All menu items (for dropdown/mobile)
     const allMenuItems = [
-        { href: "/admin", icon: <Home className="w-5 h-5" />, label: "Dashboard" },
         { href: "/admin/add-transaction", icon: <PlusCircle className="w-5 h-5" />, label: "Add Transaction" },
         { href: "/admin/transactions", icon: <FileText className="w-5 h-5" />, label: "Transactions" },
         { href: "/admin/inventory", icon: <Package className="w-5 h-5" />, label: "Inventory" },
