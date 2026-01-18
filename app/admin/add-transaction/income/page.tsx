@@ -145,15 +145,15 @@ export default function AddIncomePage() {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Income Source
                             </label>
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-3 gap-3 text-sm">
                                 <button
                                     type="button"
                                     onClick={() => setIncomeSource('Subscriptions')}
-                                    className={`p-3 rounded-lg border-2 transition-all ${incomeSource === 'Subscriptions'
+                                    className={`p-1 rounded-lg border-2 transition-all ${incomeSource === 'Subscriptions'
                                         ? 'border-blue-500 bg-blue-50 text-blue-700 font-medium'
                                         : 'border-gray-300 hover:border-gray-400'}`}
                                 >
-                                    WCU Registry
+                                    Sub- scriptions
                                 </button>
                                 <button
                                     type="button"
