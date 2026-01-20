@@ -257,7 +257,7 @@ export default function MonthlySummaryPage() {
 
                         <div className="space-y-2">
                             <div className="flex justify-between items-center p-2 bg-white/50 rounded-lg">
-                                <span className="text-gray-700">Target (20%)</span>
+                                <span className="text-gray-700">Target ({(DONATION_PERCENTAGE * 100).toFixed(0)}%)</span>
                                 <span className="font-semibold text-gray-900">${donationTarget.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center p-2 bg-white/50 rounded-lg">
@@ -457,7 +457,7 @@ export default function MonthlySummaryPage() {
                             <div className="w-3 h-3 bg-purple-500 rounded-full mt-1"></div>
                             <div>
                                 <div className="font-medium text-sm text-gray-900">Donations</div>
-                                <div className="text-xs text-gray-600">20% target of total income</div>
+                                <div className="text-xs text-gray-600">{(DONATION_PERCENTAGE * 100).toFixed(0)}% target of total income</div>
                             </div>
                         </div>
                         <div className="flex items-start gap-2">
