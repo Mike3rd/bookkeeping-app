@@ -6,7 +6,7 @@ import { useSupabaseUser } from '@/hooks/useSupabaseUser';
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Target, DollarSign, Calendar, Minus, Plus } from 'lucide-react';
 import { CSVExports } from '../components/CSVExports';
 
-const DONATION_PERCENTAGE = 0.2; // 20%
+const DONATION_PERCENTAGE = 0.03; //0.2= 20%
 
 type Transaction = {
     id: string;
